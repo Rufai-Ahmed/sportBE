@@ -1,0 +1,91 @@
+import { Request, Response } from 'express';
+import Player from '../models/player';
+import jwt from 'jsonwebtoken';
+import { config } from '../config';
+
+// Register a new player
+export const createPlayer = async (req: Request, res: Response) => {
+  try {
+    const { username, password, phoneNumber, photo } = req.body;
+    const player = await Player.create({ username, password, phoneNumber, photo });
+    res.status(201).json({ message: 'Player registered successfully', player });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Login player
+export const loginPlayer = async (req: Request, res: Response) => {
+  try {
+    const { username, password } = req.body;
+    const player = await Player.findOne({ username });
+
+    if (!player) {
+      return res.status(400).json({ message: 'Invalid username or password' });
+    }
+
+    const isMatch = await player.comparePassword(password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid username or password' });
+    }
+
+    // Generate JWT
+    const token = jwt.sign({ id: player._id }, config.jwtSecret, { expiresIn: '1h' });
+
+    res.json({ token });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Get all players
+export const getPlayers = async (req: Request, res: Response) => {
+  try {
+    const players = await Player.find();
+    res.status(200).json(players);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Get a player by ID
+export const getPlayerById = async (req: Request, res: Response) => {
+  try {
+    const player = await Player.findById(req.params.id);
+    if (!player) return res.status(404).json({ message: 'Player not found' });
+    res.status(200).json(player);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Update a player
+export const updatePlayer = async (req: Request, res: Response) => {
+  try {
+    const { username, password, phoneNumber, photo } = req.body;
+    const player = await Player.findById(req.params.id);
+    if (!player) return res.status(404).json({ message: 'Player not found' });
+
+    if (username) player.username = username;
+    if (password) player.password = password; // Password should be hashed in pre-save hook
+    if (phoneNumber) player.phoneNumber = phoneNumber;
+    if (photo) player.photo = photo;
+
+    await player.save();
+    res.status(200).json({ message: 'Player updated successfully', player });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Delete a player
+export const deletePlayer = async (req: Request, res: Response) => {
+  try {
+    const player = await Player.findByIdAndDelete(req.params.id);
+    if (!player) return res.status(404).json({ message: 'Player not found' });
+    res.status(200).json({ message: 'Player deleted successfully' });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
