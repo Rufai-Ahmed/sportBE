@@ -6,12 +6,12 @@ import { config } from "../config";
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, email } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = User.create({ username, password: hashedPassword });
+    const user = User.create({ username, password: hashedPassword, email });
 
     res.status(201).json({ message: "User registered successfully" });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
 };
@@ -30,7 +30,7 @@ export const login = async (req: Request, res: Response) => {
       expiresIn: "1h",
     });
     res.json({ token });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
 };

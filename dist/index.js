@@ -28,22 +28,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importStar(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const errorHandler_1 = require("./utils/errorHandler");
+// Import routes
 const player_1 = __importDefault(require("./routes/player"));
 const team_1 = __importDefault(require("./routes/team"));
 const payment_1 = __importDefault(require("./routes/payment"));
 const session_1 = __importDefault(require("./routes/session"));
+const auth_1 = __importDefault(require("./routes/auth"));
 const game_1 = __importDefault(require("./routes/game"));
-const errorHandler_1 = require("./utils/errorHandler");
-const dotenv_1 = __importDefault(require("dotenv"));
-const auth_1 = require("./middleware/auth");
+const match_1 = __importDefault(require("./routes/match"));
+const admin_1 = __importDefault(require("./routes/admin"));
+// Import middleware
+const auth_2 = require("./middleware/auth");
+const admin_middleware_1 = require("./middleware/admin.middleware");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use((0, express_1.json)());
-app.use("/players", auth_1.authMiddleware, player_1.default);
-app.use("/teams", auth_1.authMiddleware, team_1.default);
-app.use("/payments", auth_1.authMiddleware, payment_1.default);
-app.use("/sessions", auth_1.authMiddleware, session_1.default);
-app.use("/games", auth_1.authMiddleware, game_1.default);
+// Apply middleware and routes
+app.use("/players", auth_2.authMiddleware, player_1.default);
+app.use("/teams", auth_2.authMiddleware, team_1.default);
+app.use("/payments", auth_2.authMiddleware, payment_1.default);
+app.use("/sessions", auth_2.authMiddleware, session_1.default);
+app.use("/games", auth_2.authMiddleware, game_1.default);
+app.use("/matches", admin_middleware_1.adminAuthMiddleware, match_1.default); // Protect match routes with adminAuthMiddleware
+app.use("/admin", admin_1.default); // Protect admin routes with adminAuthMiddleware
+app.use("/api/v1", auth_1.default);
 app.use(errorHandler_1.errorHandler);
 mongoose_1.default
     .connect(process.env.URI)

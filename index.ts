@@ -1,25 +1,37 @@
 import express, { json } from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
+import dotenv from "dotenv";
+import { errorHandler } from "./utils/errorHandler";
+
+// Import routes
 import playerRoutes from "./routes/player";
 import teamRoutes from "./routes/team";
 import paymentRoutes from "./routes/payment";
 import sessionRoutes from "./routes/session";
+import authRoutes from "./routes/auth";
 import gameRoutes from "./routes/game";
-import { errorHandler } from "./utils/errorHandler";
-import dotenv from "dotenv";
+import matchRoutes from "./routes/match";
+import adminRoutes from "./routes/admin";
+
+// Import middleware
 import { authMiddleware } from "./middleware/auth";
+import { adminAuthMiddleware } from "./middleware/admin.middleware";
 
 dotenv.config();
 
 const app = express();
 app.use(json());
 
+// Apply middleware and routes
 app.use("/players", authMiddleware, playerRoutes);
 app.use("/teams", authMiddleware, teamRoutes);
 app.use("/payments", authMiddleware, paymentRoutes);
 app.use("/sessions", authMiddleware, sessionRoutes);
 app.use("/games", authMiddleware, gameRoutes);
+app.use("/matches", adminAuthMiddleware, matchRoutes); // Protect match routes with adminAuthMiddleware
+app.use("/admin", adminRoutes); // Protect admin routes with adminAuthMiddleware
+app.use("/api/v1", authRoutes);
 
 app.use(errorHandler);
 
