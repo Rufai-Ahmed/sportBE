@@ -29,8 +29,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importStar(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const cors_1 = __importDefault(require("cors"));
 const errorHandler_1 = require("./utils/errorHandler");
-// Import routes
 const player_1 = __importDefault(require("./routes/player"));
 const team_1 = __importDefault(require("./routes/team"));
 const payment_1 = __importDefault(require("./routes/payment"));
@@ -39,11 +39,11 @@ const auth_1 = __importDefault(require("./routes/auth"));
 const game_1 = __importDefault(require("./routes/game"));
 const match_1 = __importDefault(require("./routes/match"));
 const admin_1 = __importDefault(require("./routes/admin"));
-// Import middleware
 const auth_2 = require("./middleware/auth");
 const admin_middleware_1 = require("./middleware/admin.middleware");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
+app.use((0, cors_1.default)());
 app.use((0, express_1.json)());
 // Apply middleware and routes
 app.use("/players", auth_2.authMiddleware, player_1.default);
