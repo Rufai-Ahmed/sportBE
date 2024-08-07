@@ -26,35 +26,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const cors_1 = __importDefault(require("cors"));
-const dotenv_1 = require("dotenv");
 const express_1 = __importStar(require("express"));
-const mainApp_1 = require("./mainApp");
-const dbConfig_1 = require("./utils/dbConfig");
-const constant_1 = require("./utils/constant");
-(0, dotenv_1.config)();
+const mongoose_1 = __importDefault(require("mongoose"));
+const player_1 = __importDefault(require("./routes/player"));
+const team_1 = __importDefault(require("./routes/team"));
+const payment_1 = __importDefault(require("./routes/payment"));
+const session_1 = __importDefault(require("./routes/session"));
+const game_1 = __importDefault(require("./routes/game"));
+const errorHandler_1 = require("./utils/errorHandler");
+const dotenv_1 = __importDefault(require("dotenv"));
+const auth_1 = require("./middleware/auth");
+dotenv_1.default.config();
 const app = (0, express_1.default)();
-const corsOptions = {
-    origin: ["http://localhost:3000", "https://yourdomain.com"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-};
 app.use((0, express_1.json)());
-app.use((0, cors_1.default)(corsOptions));
-(0, mainApp_1.mainApp)(app);
-const server = app.listen(constant_1.port, () => {
-    console.clear();
-    (0, dbConfig_1.dbConfig)();
-    console.log(`Server is running on port ${constant_1.port}`);
-});
-process
-    .on("uncaughtException", (error) => {
-    console.log("error: ", error);
-    process.exit(1);
-})
-    .on("unhandledRejection", (reason) => {
-    console.log("reason: ", reason);
-    server.close(() => {
-        process.exit(1);
-    });
-});
+app.use("/players", auth_1.authMiddleware, player_1.default);
+app.use("/teams", auth_1.authMiddleware, team_1.default);
+app.use("/payments", auth_1.authMiddleware, payment_1.default);
+app.use("/sessions", auth_1.authMiddleware, session_1.default);
+app.use("/games", auth_1.authMiddleware, game_1.default);
+app.use(errorHandler_1.errorHandler);
+mongoose_1.default
+    .connect(process.env.URI)
+    .then(() => console.log("Database connected"))
+    .catch((err) => console.error("Database connection error:", err));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

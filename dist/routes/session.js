@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const session_1 = require("../controllers/session");
+const router = (0, express_1.Router)();
+router.post("/", session_1.createSession);
+router.get("/", session_1.getSessions);
+router.get("/:id", session_1.getSessionById);
+router.put("/:id", session_1.updateSession);
+router.delete("/:id", session_1.deleteSession);
+exports.default = router;
