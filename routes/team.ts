@@ -16,7 +16,7 @@ import {
 
 const router = Router();
 
-router.post("/", authMiddleware, createTeam);
+router.post("/", createTeam);
 router.get("/", getTeams);
 router.get("/:id", getTeamById);
 router.put("/:id", updateTeam);

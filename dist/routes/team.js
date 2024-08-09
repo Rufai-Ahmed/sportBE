@@ -2,10 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const team_1 = require("../controllers/team");
-const auth_1 = require("../middleware/auth");
 const playerController_1 = require("../controllers/playerController");
 const router = (0, express_1.Router)();
-router.post("/", auth_1.authMiddleware, team_1.createTeam);
+router.post("/", team_1.createTeam);
 router.get("/", team_1.getTeams);
 router.get("/:id", team_1.getTeamById);
 router.put("/:id", team_1.updateTeam);
