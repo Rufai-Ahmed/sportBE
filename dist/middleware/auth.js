@@ -14,10 +14,10 @@ const authMiddleware = async (req, res, next) => {
     try {
         const decoded = jsonwebtoken_1.default.verify(token, config_1.config.jwtSecret);
         const admin = await admin_model_1.default.findById(decoded.id);
+        console.log(admin);
         if (!admin)
             return res.status(401).json({ message: "Unauthorized" });
-        req.user = admin; // Attach admin to request object
-        next();
+        req.user = admin;
     }
     catch (error) {
         res.status(401).json({ message: "Invalid token" });

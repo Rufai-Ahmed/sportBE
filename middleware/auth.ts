@@ -20,10 +20,11 @@ export const authMiddleware = async (
     const decoded = jwt.verify(token, config.jwtSecret) as JwtPayload;
     const admin = await adminModel.findById(decoded.id);
 
+    console.log(admin);
+
     if (!admin) return res.status(401).json({ message: "Unauthorized" });
 
-    req.user = admin; // Attach admin to request object
-    next();
+    req.user = admin;
   } catch (error) {
     res.status(401).json({ message: "Invalid token" });
   }
