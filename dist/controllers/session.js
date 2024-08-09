@@ -8,12 +8,6 @@ const session_1 = __importDefault(require("../models/session"));
 const createSession = async (req, res) => {
     try {
         const { type, startTime, endTime, teams } = req.body;
-        // Validate team array length
-        if (teams.length > 2) {
-            return res
-                .status(400)
-                .json({ message: "A session can have a maximum of 2 teams." });
-        }
         const session = await session_1.default.create({
             name: `Start ${type.charAt(0).toUpperCase() + type.slice(1)} Session`,
             startTime,
@@ -32,7 +26,7 @@ exports.createSession = createSession;
 // Get all sessions
 const getSessions = async (req, res) => {
     try {
-        const sessions = await session_1.default.find();
+        const sessions = await session_1.default.find().populate("teams");
         res.status(200).json(sessions);
     }
     catch (error) {
