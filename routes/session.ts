@@ -9,10 +9,11 @@ import {
   endSession,
   getCurrentSession,
 } from "../controllers/session";
+import { adminAuthMiddleware } from "../middleware/admin.middleware";
 
 const router = Router();
 
-router.post("/sessions", createSession);
+router.post("/sessions", adminAuthMiddleware, createSession);
 router.get("/sessions", getSessions);
 router.get("/sessions/:id", getSessionById);
 router.put("/sessions/:id", updateSession);

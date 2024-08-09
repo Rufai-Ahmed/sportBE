@@ -24,7 +24,7 @@ app.use(json());
 app.use("/players", authMiddleware, playerRoutes);
 app.use("/teams", authMiddleware, teamRoutes);
 app.use("/payments", authMiddleware, paymentRoutes);
-app.use("/sessions", authMiddleware, sessionRoutes);
+app.use("/sessions", sessionRoutes);
 app.use("/games", authMiddleware, gameRoutes);
 app.use("/matches", adminAuthMiddleware, matchRoutes); // Protect match routes with adminAuthMiddleware
 app.use("/admin", adminRoutes); // Protect admin routes with adminAuthMiddleware

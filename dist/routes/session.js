@@ -2,8 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const session_1 = require("../controllers/session");
+const admin_middleware_1 = require("../middleware/admin.middleware");
 const router = (0, express_1.Router)();
-router.post("/sessions", session_1.createSession);
+router.post("/sessions", admin_middleware_1.adminAuthMiddleware, session_1.createSession);
 router.get("/sessions", session_1.getSessions);
 router.get("/sessions/:id", session_1.getSessionById);
 router.put("/sessions/:id", session_1.updateSession);

@@ -49,7 +49,7 @@ app.use((0, express_1.json)());
 app.use("/players", auth_2.authMiddleware, player_1.default);
 app.use("/teams", auth_2.authMiddleware, team_1.default);
 app.use("/payments", auth_2.authMiddleware, payment_1.default);
-app.use("/sessions", auth_2.authMiddleware, session_1.default);
+app.use("/sessions", session_1.default);
 app.use("/games", auth_2.authMiddleware, game_1.default);
 app.use("/matches", admin_middleware_1.adminAuthMiddleware, match_1.default); // Protect match routes with adminAuthMiddleware
 app.use("/admin", admin_1.default); // Protect admin routes with adminAuthMiddleware
