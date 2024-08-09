@@ -7,8 +7,18 @@ export const createSession = async (req: Request, res: Response) => {
     const { type, startTime, endTime } = req.body;
     const session = await Session.create({
       name: `Start ${type.charAt(0).toUpperCase() + type.slice(1)} Session`,
-      startTime,
-      endTime,
+      startTime:
+        type === "morning"
+          ? "7:00am"
+          : type === "afternoon"
+          ? "1:00pm"
+          : "5:00pm",
+      endTime:
+        type === "morning"
+          ? "12:00pm"
+          : type === "afternoon"
+          ? "4:00pm"
+          : "10:00pm",
       type,
       isActive: false,
     });
