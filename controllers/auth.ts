@@ -16,21 +16,21 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-export const login = async (req: Request, res: Response) => {
-  try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+// export const login = async (req: Request, res: Response) => {
+//   try {
+//     const { username, password } = req.body;
+//     const user = await User.findOne({ username });
+//     if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(400).json({ message: "Invalid credentials" });
+//     // const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch)
+//       return res.status(400).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id }, config.jwtSecret, {
-      expiresIn: "1h",
-    });
-    res.json({ token });
-  } catch (error: any) {
-    res.status(400).json({ message: error.message });
-  }
-};
+//     const token = jwt.sign({ id: user._id }, config.jwtSecret, {
+//       expiresIn: "1h",
+//     });
+//     res.json({ token });
+//   } catch (error: any) {
+//     res.status(400).json({ message: error.message });
+//   }
+// };
