@@ -13,7 +13,7 @@ import { adminAuthMiddleware } from "../middleware/admin.middleware";
 
 const router = Router();
 
-router.post("/sessions", adminAuthMiddleware, createSession);
+router.post("/sessions", createSession);
 router.get("/sessions", getSessions);
 router.get("/sessions/:id", getSessionById);
 router.put("/sessions/:id", updateSession);
