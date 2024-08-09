@@ -1,16 +1,24 @@
 import { Request, Response } from "express";
 import Session from "../models/session";
 
+// Create a new session
 export const createSession = async (req: Request, res: Response) => {
   try {
-    const session = new Session(req.body);
-    await session.save();
+    const { type, startTime, endTime } = req.body;
+    const session = await Session.create({
+      name: `Start ${type.charAt(0).toUpperCase() + type.slice(1)} Session`,
+      startTime,
+      endTime,
+      type,
+      isActive: false,
+    });
     res.status(201).json(session);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
 };
 
+// Get all sessions
 export const getSessions = async (req: Request, res: Response) => {
   try {
     const sessions = await Session.find();
@@ -20,6 +28,7 @@ export const getSessions = async (req: Request, res: Response) => {
   }
 };
 
+// Get a session by ID
 export const getSessionById = async (req: Request, res: Response) => {
   try {
     const session = await Session.findById(req.params.id);
@@ -30,6 +39,7 @@ export const getSessionById = async (req: Request, res: Response) => {
   }
 };
 
+// Update a session
 export const updateSession = async (req: Request, res: Response) => {
   try {
     const session = await Session.findByIdAndUpdate(req.params.id, req.body, {
@@ -42,6 +52,7 @@ export const updateSession = async (req: Request, res: Response) => {
   }
 };
 
+// Delete a session
 export const deleteSession = async (req: Request, res: Response) => {
   try {
     const session = await Session.findByIdAndDelete(req.params.id);
@@ -52,6 +63,7 @@ export const deleteSession = async (req: Request, res: Response) => {
   }
 };
 
+// Start a session
 export const startSession = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -66,6 +78,7 @@ export const startSession = async (req: Request, res: Response) => {
   }
 };
 
+// End a session
 export const endSession = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -74,8 +87,46 @@ export const endSession = async (req: Request, res: Response) => {
 
     session.isActive = false;
     await session.save();
+
+    // Start the next session if there is one
+    await startNextSession(session.type as "morning" | "afternoon" | "evening");
+
     res.status(200).json(session);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+// Get the current active session
+export const getCurrentSession = async (req: Request, res: Response) => {
+  try {
+    const now = new Date();
+    const currentSession = await Session.findOne({
+      startTime: { $lte: now },
+      endTime: { $gte: now },
+      isActive: true,
+    });
+    res.status(200).json(currentSession);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Start the next session based on the current session type
+const startNextSession = async (
+  currentType: "morning" | "afternoon" | "evening"
+) => {
+  let nextType: "morning" | "afternoon" | "evening";
+  if (currentType === "morning") nextType = "afternoon";
+  else if (currentType === "afternoon") nextType = "evening";
+  else return; // No more sessions today
+
+  const nextSession = await Session.findOne({
+    type: nextType,
+    isActive: false,
+  });
+  if (nextSession) {
+    nextSession.isActive = true;
+    await nextSession.save();
   }
 };

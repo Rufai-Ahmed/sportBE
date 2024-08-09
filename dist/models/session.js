@@ -29,5 +29,10 @@ const sessionSchema = new mongoose_1.Schema({
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
     isActive: { type: Boolean, default: false },
+    type: {
+        type: String,
+        enum: ["morning", "afternoon", "evening"],
+        required: true,
+    },
 });
 exports.default = mongoose_1.default.model("Session", sessionSchema);
