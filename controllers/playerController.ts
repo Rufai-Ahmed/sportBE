@@ -1,14 +1,19 @@
-import { Request, Response } from 'express';
-import Player from '../models/player';
-import jwt from 'jsonwebtoken';
-import { config } from '../config';
+import { Request, Response } from "express";
+import Player from "../models/player";
+import jwt from "jsonwebtoken";
+import { config } from "../config";
 
 // Register a new player
 export const createPlayer = async (req: Request, res: Response) => {
   try {
     const { username, password, phoneNumber, photo } = req.body;
-    const player = await Player.create({ username, password, phoneNumber, photo });
-    res.status(201).json({ message: 'Player registered successfully', player });
+    const player = await Player.create({
+      username,
+      password,
+      phoneNumber,
+      photo,
+    });
+    res.status(201).json({ message: "Player registered successfully", player });
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
@@ -21,17 +26,19 @@ export const loginPlayer = async (req: Request, res: Response) => {
     const player = await Player.findOne({ username });
 
     if (!player) {
-      return res.status(400).json({ message: 'Invalid username or password' });
+      return res.status(400).json({ message: "Invalid username or password" });
     }
 
     const isMatch = await player.comparePassword(password);
 
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid username or password' });
+      return res.status(400).json({ message: "Invalid username or password" });
     }
 
     // Generate JWT
-    const token = jwt.sign({ id: player._id }, config.jwtSecret, { expiresIn: '1h' });
+    const token = jwt.sign({ id: player._id }, config.jwtSecret, {
+      expiresIn: "1h",
+    });
 
     res.json({ token });
   } catch (error: any) {
@@ -53,7 +60,7 @@ export const getPlayers = async (req: Request, res: Response) => {
 export const getPlayerById = async (req: Request, res: Response) => {
   try {
     const player = await Player.findById(req.params.id);
-    if (!player) return res.status(404).json({ message: 'Player not found' });
+    if (!player) return res.status(404).json({ message: "Player not found" });
     res.status(200).json(player);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
@@ -63,17 +70,18 @@ export const getPlayerById = async (req: Request, res: Response) => {
 // Update a player
 export const updatePlayer = async (req: Request, res: Response) => {
   try {
-    const { username, password, phoneNumber, photo } = req.body;
+    const { username, password, phoneNumber, photo, club } = req.body;
     const player = await Player.findById(req.params.id);
-    if (!player) return res.status(404).json({ message: 'Player not found' });
+    if (!player) return res.status(404).json({ message: "Player not found" });
 
     if (username) player.username = username;
     if (password) player.password = password; // Password should be hashed in pre-save hook
     if (phoneNumber) player.phoneNumber = phoneNumber;
     if (photo) player.photo = photo;
+    if (club) player.club = club;
 
     await player.save();
-    res.status(200).json({ message: 'Player updated successfully', player });
+    res.status(200).json({ message: "Player updated successfully", player });
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
@@ -83,8 +91,8 @@ export const updatePlayer = async (req: Request, res: Response) => {
 export const deletePlayer = async (req: Request, res: Response) => {
   try {
     const player = await Player.findByIdAndDelete(req.params.id);
-    if (!player) return res.status(404).json({ message: 'Player not found' });
-    res.status(200).json({ message: 'Player deleted successfully' });
+    if (!player) return res.status(404).json({ message: "Player not found" });
+    res.status(200).json({ message: "Player deleted successfully" });
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }

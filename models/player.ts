@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, ObjectId, Types } from "mongoose";
 import bcrypt from "bcrypt";
 
 interface Player extends Document {
@@ -6,6 +6,7 @@ interface Player extends Document {
   password: string;
   phoneNumber: string;
   photo: string;
+  club: ObjectId;
   comparePassword(password: string): Promise<boolean>;
 }
 
@@ -14,6 +15,7 @@ const playerSchema: Schema = new Schema({
   password: { type: String, required: true },
   phoneNumber: { type: String, required: true },
   photo: { type: String },
+  club: { type: Types.ObjectId, ref: "Team" },
 });
 
 // Hash password before saving

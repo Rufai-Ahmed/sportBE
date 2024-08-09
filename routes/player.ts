@@ -10,7 +10,7 @@ import {
 
 const router = Router();
 
-router.post("/login", loginPlayer); // New login route
+router.post("/login", loginPlayer);
 router.get("/", getPlayers);
 router.get("/:id", getPlayerById);
 router.put("/:id", updatePlayer);

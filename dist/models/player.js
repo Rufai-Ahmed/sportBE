@@ -33,6 +33,7 @@ const playerSchema = new mongoose_1.Schema({
     password: { type: String, required: true },
     phoneNumber: { type: String, required: true },
     photo: { type: String },
+    club: { type: mongoose_1.Types.ObjectId, ref: "Team" },
 });
 // Hash password before saving
 playerSchema.pre("save", async function (next) {
