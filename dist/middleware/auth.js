@@ -6,13 +6,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyToken = exports.authMiddleware = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("../config");
-const authMiddleware = (req, res, next) => {
-    const token = req.header("Authorization")?.replace("Bearer ", "");
+const admin_model_1 = __importDefault(require("../models/admin.model"));
+const authMiddleware = async (req, res, next) => {
+    const token = req.headers.authorization?.split(" ")[1];
     if (!token)
-        return res.status(401).json({ message: "Access denied" });
+        return res.status(401).json({ message: "No token provided" });
     try {
         const decoded = jsonwebtoken_1.default.verify(token, config_1.config.jwtSecret);
-        req.user = decoded;
+        const admin = await admin_model_1.default.findById(decoded.id);
+        if (!admin)
+            return res.status(401).json({ message: "Unauthorized" });
+        req.user = admin; // Attach admin to request object
         next();
     }
     catch (error) {
