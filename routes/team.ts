@@ -8,10 +8,11 @@ import {
   addTeamToSession,
   removeTeamFromSession,
 } from "../controllers/team";
+import { authMiddleware } from "../middleware/auth";
 
 const router = Router();
 
-router.post("/", createTeam);
+router.post("/", authMiddleware, createTeam);
 router.get("/", getTeams);
 router.get("/:id", getTeamById);
 router.put("/:id", updateTeam);

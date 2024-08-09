@@ -22,7 +22,7 @@ app.use(json());
 
 // Apply middleware and routes
 app.use("/players", authMiddleware, playerRoutes);
-app.use("/teams", authMiddleware, teamRoutes);
+app.use("/teams", teamRoutes);
 app.use("/payments", authMiddleware, paymentRoutes);
 app.use("/sessions", sessionRoutes);
 app.use("/games", authMiddleware, gameRoutes);

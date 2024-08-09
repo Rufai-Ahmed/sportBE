@@ -47,7 +47,7 @@ app.use((0, cors_1.default)());
 app.use((0, express_1.json)());
 // Apply middleware and routes
 app.use("/players", auth_2.authMiddleware, player_1.default);
-app.use("/teams", auth_2.authMiddleware, team_1.default);
+app.use("/teams", team_1.default);
 app.use("/payments", auth_2.authMiddleware, payment_1.default);
 app.use("/sessions", session_1.default);
 app.use("/games", auth_2.authMiddleware, game_1.default);
