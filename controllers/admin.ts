@@ -29,7 +29,7 @@ export const loginAdmin = async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign({ id: admin._id }, config.jwtSecret, {
-      expiresIn: "1h",
+      expiresIn: "2w",
     });
 
     res.json({ token });

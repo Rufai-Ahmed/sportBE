@@ -3,10 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deletePlayer = exports.updatePlayer = exports.getPlayerById = exports.getPlayers = exports.loginPlayer = exports.createPlayer = void 0;
+exports.deletePlayer = exports.updatePlayer = exports.getPlayerById = exports.getPlayers = exports.loginPlayer = exports.removePlayerFromTeam = exports.addPlayerToTeam = exports.createPlayer = void 0;
 const player_1 = __importDefault(require("../models/player"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("../config");
+const team_1 = __importDefault(require("../models/team"));
 // Register a new player
 const createPlayer = async (req, res) => {
     try {
@@ -24,6 +25,42 @@ const createPlayer = async (req, res) => {
     }
 };
 exports.createPlayer = createPlayer;
+const addPlayerToTeam = async (req, res) => {
+    try {
+        const { teamId, playerId } = req.params;
+        const teamm = await team_1.default.findById(teamId);
+        if (!teamm)
+            return res.status(404).json({ message: "Team not found" });
+        const player = await player_1.default.findById(playerId);
+        if (!player)
+            return res.status(404).json({ message: "Player not found" });
+        if (!teamm.players.includes(playerId)) {
+            teamm.players.push(playerId);
+            await teamm.save();
+        }
+        res.status(200).json(teamm);
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+exports.addPlayerToTeam = addPlayerToTeam;
+// Remove a player from a team
+const removePlayerFromTeam = async (req, res) => {
+    try {
+        const { teamId, playerId } = req.params;
+        const teamm = await team_1.default.findById(teamId);
+        if (!teamm)
+            return res.status(404).json({ message: "Team not found" });
+        teamm.players = teamm.players.filter((id) => id.toString() !== playerId);
+        await teamm.save();
+        res.status(200).json(teamm);
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+exports.removePlayerFromTeam = removePlayerFromTeam;
 // Login player
 const loginPlayer = async (req, res) => {
     try {

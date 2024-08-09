@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import Player from "../models/player";
 import jwt from "jsonwebtoken";
 import { config } from "../config";
+import team from "../models/team";
+import { ObjectId } from "mongoose";
 
 // Register a new player
 export const createPlayer = async (req: Request, res: Response) => {
@@ -14,6 +16,46 @@ export const createPlayer = async (req: Request, res: Response) => {
       photo,
     });
     res.status(201).json({ message: "Player registered successfully", player });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const addPlayerToTeam = async (req: Request, res: Response) => {
+  try {
+    const { teamId, playerId }: any = req.params;
+
+    const teamm = await team.findById(teamId);
+    if (!teamm) return res.status(404).json({ message: "Team not found" });
+
+    const player = await Player.findById(playerId);
+    if (!player) return res.status(404).json({ message: "Player not found" });
+
+    if (!teamm.players.includes(playerId)) {
+      teamm.players.push(playerId);
+      await teamm.save();
+    }
+
+    res.status(200).json(teamm);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Remove a player from a team
+export const removePlayerFromTeam = async (req: Request, res: Response) => {
+  try {
+    const { teamId, playerId } = req.params;
+
+    const teamm = await team.findById(teamId);
+    if (!teamm) return res.status(404).json({ message: "Team not found" });
+
+    teamm.players = teamm.players.filter(
+      (id: ObjectId) => id.toString() !== playerId
+    );
+    await teamm.save();
+
+    res.status(200).json(teamm);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }

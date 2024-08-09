@@ -9,6 +9,10 @@ import {
   removeTeamFromSession,
 } from "../controllers/team";
 import { authMiddleware } from "../middleware/auth";
+import {
+  addPlayerToTeam,
+  removePlayerFromTeam,
+} from "../controllers/playerController";
 
 const router = Router();
 
@@ -19,5 +23,7 @@ router.put("/:id", updateTeam);
 router.delete("/:id", deleteTeam);
 router.post("/sessions/:sessionId/teams/:teamId", addTeamToSession);
 router.delete("/sessions/:sessionId/teams/:teamId", removeTeamFromSession);
+router.post("/teams/:teamId/players/:playerId", addPlayerToTeam);
+router.delete("/teams/:teamId/players/:playerId", removePlayerFromTeam);
 
 export default router;

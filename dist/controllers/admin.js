@@ -30,7 +30,7 @@ const loginAdmin = async (req, res) => {
             return res.status(400).json({ message: "Invalid username or password" });
         }
         const token = jsonwebtoken_1.default.sign({ id: admin._id }, config_1.config.jwtSecret, {
-            expiresIn: "1h",
+            expiresIn: "2w",
         });
         res.json({ token });
     }
