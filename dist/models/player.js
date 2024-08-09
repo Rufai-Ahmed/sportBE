@@ -22,12 +22,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
 const playerSchema = new mongoose_1.Schema({
     username: { type: String, required: true, unique: true },
     // password: { type: String, required: true },
@@ -36,20 +32,18 @@ const playerSchema = new mongoose_1.Schema({
     club: { type: mongoose_1.Types.ObjectId, ref: "Team" },
 });
 // Hash password before saving
-playerSchema.pre("save", async function (next) {
-    if (!this.isModified("password"))
-        return next();
-    try {
-        const salt = await bcrypt_1.default.genSalt(10);
-        this.password = await bcrypt_1.default.hash(this.password, salt);
-        next();
-    }
-    catch (error) {
-        next(error);
-    }
-});
+// playerSchema.pre<Player>("save", async function (next) {
+//   if (!this.isModified("password")) return next();
+//   try {
+//     const salt = await bcrypt.genSalt(10);
+//     this.password = await bcrypt.hash(this.password, salt);
+//     next();
+//   } catch (error: any) {
+//     next(error);
+//   }
+// });
 // Method to compare password
-playerSchema.methods.comparePassword = function (password) {
-    return bcrypt_1.default.compare(password, this.password);
-};
+// playerSchema.methods.comparePassword = function (password: string) {
+//   return bcrypt.compare(password, this.password);
+// };
 exports.default = mongoose_1.default.model("Player", playerSchema);
