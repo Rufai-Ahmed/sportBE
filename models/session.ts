@@ -6,7 +6,7 @@ interface Session extends Document {
   endTime: Date;
   isActive: boolean;
   type: "morning" | "afternoon" | "evening";
-  teams: mongoose.Schema.Types.ObjectId[]; // Added field
+  teams: mongoose.Schema.Types.ObjectId[]; // Array of team IDs
 }
 
 const sessionSchema: Schema = new Schema({
@@ -19,7 +19,14 @@ const sessionSchema: Schema = new Schema({
     enum: ["morning", "afternoon", "evening"],
     required: true,
   },
-  teams: [{ type: Schema.Types.ObjectId, ref: "Team" }],
+  teams: {
+    type: [{ type: Schema.Types.ObjectId, ref: "Team" }],
+    validate: [arrayLimit, "{PATH} exceeds the limit of 2"],
+  },
 });
+
+function arrayLimit(val: any) {
+  return val.length <= 2;
+}
 
 export default mongoose.model<Session>("Session", sessionSchema);
