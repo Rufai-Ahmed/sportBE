@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document, ObjectId, Types } from "mongoose";
 import bcrypt from "bcrypt";
 
-interface Player extends Document {
+export interface iPlayer extends Document {
   username: string;
   // password: string;
   phoneNumber: string;
@@ -19,7 +19,7 @@ const playerSchema: Schema = new Schema({
 });
 
 // Hash password before saving
-// playerSchema.pre<Player>("save", async function (next) {
+// playerSchema.pre<iPlayer>("save", async function (next) {
 //   if (!this.isModified("password")) return next();
 
 //   try {
@@ -36,4 +36,4 @@ const playerSchema: Schema = new Schema({
 //   return bcrypt.compare(password, this.password);
 // };
 
-export default mongoose.model<Player>("Player", playerSchema);
+export default mongoose.model<iPlayer>("Player", playerSchema);

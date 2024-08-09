@@ -7,17 +7,29 @@ exports.deletePlayer = exports.updatePlayer = exports.getPlayerById = exports.ge
 const player_1 = __importDefault(require("../models/player"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("../config");
-const team_1 = __importDefault(require("../models/team"));
+const team_1 = __importDefault(require("../models/team")); // Make sure this import is correct
 // Register a new player
 const createPlayer = async (req, res) => {
     try {
-        const { username, password, phoneNumber, photo } = req.body;
+        const { username, password, phoneNumber, photo, teamId } = req.body;
+        // Create the player
         const player = await player_1.default.create({
             username,
             password,
             phoneNumber,
             photo,
         });
+        // If a teamId is provided, add the player to the team
+        if (teamId) {
+            const team = await team_1.default.findById(teamId);
+            if (!team) {
+                return res.status(404).json({ message: "Team not found" });
+            }
+            if (!team.players.includes(player._id)) {
+                team.players.push(player._id);
+                await team.save();
+            }
+        }
         res.status(201).json({ message: "Player registered successfully", player });
     }
     catch (error) {
@@ -25,36 +37,36 @@ const createPlayer = async (req, res) => {
     }
 };
 exports.createPlayer = createPlayer;
+// Add additional player-team handling functions
 const addPlayerToTeam = async (req, res) => {
     try {
         const { teamId, playerId } = req.params;
-        const teamm = await team_1.default.findById(teamId);
-        if (!teamm)
+        const team = await team_1.default.findById(teamId);
+        if (!team)
             return res.status(404).json({ message: "Team not found" });
         const player = await player_1.default.findById(playerId);
         if (!player)
             return res.status(404).json({ message: "Player not found" });
-        if (!teamm.players.includes(playerId)) {
-            teamm.players.push(playerId);
-            await teamm.save();
+        if (!team.players.includes(playerId)) {
+            team.players.push(playerId);
+            await team.save();
         }
-        res.status(200).json(teamm);
+        res.status(200).json(team);
     }
     catch (error) {
         res.status(400).json({ message: error.message });
     }
 };
 exports.addPlayerToTeam = addPlayerToTeam;
-// Remove a player from a team
 const removePlayerFromTeam = async (req, res) => {
     try {
         const { teamId, playerId } = req.params;
-        const teamm = await team_1.default.findById(teamId);
-        if (!teamm)
+        const team = await team_1.default.findById(teamId);
+        if (!team)
             return res.status(404).json({ message: "Team not found" });
-        teamm.players = teamm.players.filter((id) => id.toString() !== playerId);
-        await teamm.save();
-        res.status(200).json(teamm);
+        team.players = team.players.filter((id) => id.toString() !== playerId);
+        await team.save();
+        res.status(200).json(team);
     }
     catch (error) {
         res.status(400).json({ message: error.message });

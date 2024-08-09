@@ -32,7 +32,7 @@ const playerSchema = new mongoose_1.Schema({
     club: { type: mongoose_1.Types.ObjectId, ref: "Team" },
 });
 // Hash password before saving
-// playerSchema.pre<Player>("save", async function (next) {
+// playerSchema.pre<iPlayer>("save", async function (next) {
 //   if (!this.isModified("password")) return next();
 //   try {
 //     const salt = await bcrypt.genSalt(10);
