@@ -18,6 +18,7 @@ const authMiddleware = async (req, res, next) => {
         if (!admin)
             return res.status(401).json({ message: "Unauthorized" });
         req.user = admin;
+        next();
     }
     catch (error) {
         res.status(401).json({ message: "Invalid token" });
