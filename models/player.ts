@@ -12,7 +12,7 @@ interface Player extends Document {
 
 const playerSchema: Schema = new Schema({
   username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  // password: { type: String, required: true },
   phoneNumber: { type: String, required: true },
   photo: { type: String },
   club: { type: Types.ObjectId, ref: "Team" },

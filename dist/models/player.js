@@ -30,7 +30,7 @@ const mongoose_1 = __importStar(require("mongoose"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const playerSchema = new mongoose_1.Schema({
     username: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    // password: { type: String, required: true },
     phoneNumber: { type: String, required: true },
     photo: { type: String },
     club: { type: mongoose_1.Types.ObjectId, ref: "Team" },
