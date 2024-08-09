@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Session from "../models/session";
+import mongoose from "mongoose";
 
 export const createSession = async (req: Request, res: Response) => {
   try {
