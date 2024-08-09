@@ -25,7 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const sessionSchema = new mongoose_1.Schema({
-    name: { type: String, required: true },
+    name: { type: String },
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
     isActive: { type: Boolean, default: false },
@@ -34,5 +34,6 @@ const sessionSchema = new mongoose_1.Schema({
         enum: ["morning", "afternoon", "evening"],
         required: true,
     },
+    teams: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Team" }],
 });
 exports.default = mongoose_1.default.model("Session", sessionSchema);

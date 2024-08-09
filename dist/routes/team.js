@@ -8,4 +8,6 @@ router.get("/", team_1.getTeams);
 router.get("/:id", team_1.getTeamById);
 router.put("/:id", team_1.updateTeam);
 router.delete("/:id", team_1.deleteTeam);
+router.post("/sessions/:sessionId/teams/:teamId", team_1.addTeamToSession);
+router.delete("/sessions/:sessionId/teams/:teamId", team_1.removeTeamFromSession);
 exports.default = router;
