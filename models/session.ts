@@ -6,10 +6,11 @@ interface Session extends Document {
   endTime: Date;
   isActive: boolean;
   type: "morning" | "afternoon" | "evening";
+  teams: mongoose.Schema.Types.ObjectId[]; // Added field
 }
 
 const sessionSchema: Schema = new Schema({
-  name: { type: String, required: true },
+  name: { type: String },
   startTime: { type: Date, required: true },
   endTime: { type: Date, required: true },
   isActive: { type: Boolean, default: false },
@@ -18,6 +19,7 @@ const sessionSchema: Schema = new Schema({
     enum: ["morning", "afternoon", "evening"],
     required: true,
   },
+  teams: [{ type: Schema.Types.ObjectId, ref: "Team" }],
 });
 
 export default mongoose.model<Session>("Session", sessionSchema);
