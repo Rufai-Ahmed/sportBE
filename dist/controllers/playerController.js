@@ -99,7 +99,7 @@ exports.loginPlayer = loginPlayer;
 // Get all players
 const getPlayers = async (req, res) => {
     try {
-        const players = await player_1.default.find();
+        const players = await player_1.default.find().populate("club");
         res.status(200).json(players);
     }
     catch (error) {

@@ -107,7 +107,7 @@ export const loginPlayer = async (req: Request, res: Response) => {
 // Get all players
 export const getPlayers = async (req: Request, res: Response) => {
   try {
-    const players = await Player.find();
+    const players = await Player.find().populate("club");
     res.status(200).json(players);
   } catch (error: any) {
     res.status(400).json({ message: error.message });
