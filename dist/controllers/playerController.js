@@ -8,6 +8,7 @@ const player_1 = __importDefault(require("../models/player"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("../config");
 const team_1 = __importDefault(require("../models/team")); // Make sure this import is correct
+const mongoose_1 = require("mongoose");
 // Register a new player
 const createPlayer = async (req, res) => {
     try {
@@ -21,6 +22,9 @@ const createPlayer = async (req, res) => {
         });
         // If a teamId is provided, add the player to the team
         if (teamId) {
+            if (!mongoose_1.Types.ObjectId.isValid(teamId)) {
+                return res.status(400).json({ message: "Invalid team ID" });
+            }
             const team = await team_1.default.findById(teamId);
             if (!team) {
                 return res.status(404).json({ message: "Team not found" });

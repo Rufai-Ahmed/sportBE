@@ -3,7 +3,7 @@ import Player, { iPlayer } from "../models/player";
 import jwt from "jsonwebtoken";
 import { config } from "../config";
 import Team from "../models/team"; // Make sure this import is correct
-import { ObjectId } from "mongoose";
+import { ObjectId, Types } from "mongoose";
 
 // Register a new player
 export const createPlayer = async (req: Request, res: Response) => {
@@ -11,7 +11,7 @@ export const createPlayer = async (req: Request, res: Response) => {
     const { username, password, phoneNumber, photo, teamId } = req.body;
 
     // Create the player
-    const player: iPlayer = await Player.create({
+    const player: any = await Player.create({
       username,
       password,
       phoneNumber,
@@ -20,13 +20,17 @@ export const createPlayer = async (req: Request, res: Response) => {
 
     // If a teamId is provided, add the player to the team
     if (teamId) {
+      if (!Types.ObjectId.isValid(teamId)) {
+        return res.status(400).json({ message: "Invalid team ID" });
+      }
+
       const team = await Team.findById(teamId);
       if (!team) {
         return res.status(404).json({ message: "Team not found" });
       }
 
-      if (!team.players.includes(player._id as ObjectId)) {
-        team.players.push(player._id as ObjectId);
+      if (!team.players.includes(player._id)) {
+        team.players.push(player._id);
         await team.save();
       }
     }
