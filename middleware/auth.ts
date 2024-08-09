@@ -26,7 +26,7 @@ export const authMiddleware = async (
 
     req.user = admin;
     next();
-  } catch (error) {
+  } catch (error: any) {
     res.status(401).json({ message: "Invalid token" });
   }
 };
