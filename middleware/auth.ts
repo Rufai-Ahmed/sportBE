@@ -8,7 +8,7 @@ interface CustomRequest extends Request {
 }
 
 export const authMiddleware = async (
-  req: CustomRequest,
+  req: any,
   res: Response,
   next: NextFunction
 ) => {
