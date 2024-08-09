@@ -21,7 +21,6 @@ const sessionSchema: Schema = new Schema({
   },
   teams: {
     type: [{ type: Schema.Types.ObjectId, ref: "Team" }],
-    validate: [arrayLimit, "{PATH} exceeds the limit of 2"],
   },
 });
 

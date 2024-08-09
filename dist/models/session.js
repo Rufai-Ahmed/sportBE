@@ -36,7 +36,6 @@ const sessionSchema = new mongoose_1.Schema({
     },
     teams: {
         type: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Team" }],
-        validate: [arrayLimit, "{PATH} exceeds the limit of 2"],
     },
 });
 function arrayLimit(val) {
