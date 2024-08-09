@@ -21,7 +21,7 @@ app.use(cors());
 app.use(json());
 
 // Apply middleware and routes
-app.use("/players", authMiddleware, playerRoutes);
+app.use("/players", playerRoutes);
 app.use("/teams", teamRoutes);
 app.use("/payments", authMiddleware, paymentRoutes);
 app.use("/sessions", sessionRoutes);
