@@ -16,6 +16,7 @@ export const createPlayer = async (req: Request, res: Response) => {
       password,
       phoneNumber,
       photo,
+      club: teamId,
     });
 
     // If a teamId is provided, add the player to the team

@@ -19,6 +19,7 @@ const createPlayer = async (req, res) => {
             password,
             phoneNumber,
             photo,
+            club: teamId,
         });
         // If a teamId is provided, add the player to the team
         if (teamId) {
