@@ -8,7 +8,7 @@ const match_1 = require("../controllers/match");
 const router = (0, express_1.Router)();
 router.post("/register", admin_1.registerAdmin);
 router.post("/login", admin_1.loginAdmin);
-router.post("/create-player", admin_middleware_1.adminAuthMiddleware, playerController_1.createPlayer);
+router.post("/create-player", playerController_1.createPlayer);
 router.put("/update-match", admin_middleware_1.adminAuthMiddleware, match_1.updateMatchStatus);
 // Add other admin routes as needed
 exports.default = router;

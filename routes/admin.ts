@@ -9,7 +9,7 @@ const router = Router();
 router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
 
-router.post("/create-player", adminAuthMiddleware, createPlayer);
+router.post("/create-player", createPlayer);
 router.put("/update-match", adminAuthMiddleware, updateMatchStatus);
 // Add other admin routes as needed
 
